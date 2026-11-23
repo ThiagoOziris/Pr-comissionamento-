@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>Checklist Pré-Comissionamento Mobile — ZBR-OPER-FVS09-00</title>
+<style>
+  :root {
+    --bg: #f1f5f9; --card: #ffffff; --ink: #0f172a; --muted: #475569;
+    --line: #cbd5e1; --navy: #1e293b; --slate: #334155;
+    --ok-bg: #dcfce7; --ok-ink: #166534; --ok-border: #16a34a; --no-bg: #fee2e2; --no-ink: #991b1b;
+    --warn-bg: #fef3c7; --warn-ink: #92400e; --accent: #009edb;
+    --zitron-blue: #009edb;
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    padding-bottom: 128px;
+  }
+  header {
+    position: sticky;
+    top: 0;
+    z-index: 30;
+    background: var(--navy);
+    color: #fff;
+    padding: 11px 14px;
+    box-shadow: 0 2px 8px rgba(15,23,42,0.22);
+  }
+  .hdr-top { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+  .brand-left { display: flex; align-items: center; gap: 10px; min-width: 0; flex: 1; }
+  .logo-box {
+    background: #ffffff;
+    border-radius: 8px;
+    padding: 4px 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  }
+  .logo-box img { height: 28px; width: auto; display: block; }
+  .hdr-info { min-width: 0; flex: 1; }
+  .hdr-title { font-size: 14px; font-weight: 700; line-height: 1.25; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .hdr-sub-edit {
+    margin-top: 3px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    background: rgba(255,255,255,0.09);
+    border: 1px solid rgba(255,255,255,0.22);
+    border-radius: 6px;
+    padding: 3px 7px;
+  }
+  .hdr-sub-edit input {
+    width: 100%;
+    background: transparent;
+    border: none;
+    color: #f8fafc;
+    font-size: 11.5px;
+    font-weight: 500;
+    outline: none;
+    padding: 0;
+  }
+  .hdr-sub-edit input:focus {
+    color: #ffffff;
+  }
+  .edit-icon { font-size: 11px; color: #93c5fd; flex-shrink: 0; user-select: none; }
+  .btn-obra { background: var(--slate); color: #fff; border: 1px solid #64748b; border-radius: 8px; padding: 7px 10px; font-size: 12px; font-weight: 600; cursor: pointer; flex-shrink: 0; }
+  .progress-wrap { margin-top: 9px; }
+  .progress-meta { display: flex; justify-content: space-between; font-size: 11px; color: #e2e8f0; margin-bottom: 4px; }
+  .bar-bg { height: 7px; background: #334155; border-radius: 999px; overflow: hidden; }
+  .bar-fill { height: 100%; width: 0%; background: #22c55e; transition: width 0.25s ease; }
+  .obra-panel { display: none; background: #1e293b; color: #fff; padding: 10px 14px 14px; border-top: 1px solid #334155; margin-top: 8px; }
+  .obra-panel.open { display: block; }
+  .obra-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .obra-grid .full-col { grid-column: 1 / -1; }
+  .obra-grid label { font-size: 11px; color: #cbd5e1; display: block; }
+  .obra-grid input { width: 100%; margin-top: 3px; padding: 7px 8px; border-radius: 6px; border: 1px solid #475569; background: #0f172a; color: #fff; font-size: 13px; }
+  .kpi-strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; padding: 10px 12px 6px; }
+  .kpi { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 8px 6px; text-align: center; }
+  .kpi .num { font-size: 17px; font-weight: 800; }
+  .kpi .lbl { font-size: 10px; color: var(--muted); }
+  .kpi.ok .num { color: var(--ok-ink); }
+  .kpi.no .num { color: var(--no-ink); }
+  .kpi.imp .num { color: #b91c1c; }
+  .filters { padding: 4px 12px 8px; display: flex; flex-direction: column; gap: 8px; }
+  .search-input { width: 100%; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--line); background: var(--card); font-size: 14px; }
+  .chips { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 2px; }
+  .chip { border: 1px solid var(--line); background: var(--card); color: var(--ink); border-radius: 999px; padding: 6px 12px; font-size: 12px; font-weight: 600; white-space: nowrap; cursor: pointer; }
+  .chip.active { background: var(--navy); color: #fff; border-color: var(--navy); }
+  .list-wrap { padding: 0 12px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 12px; margin-bottom: 10px; box-shadow: 0 1px 2px rgba(15,23,42,0.04); }
+  .card-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+  .badge-item { background: #e2e8f0; color: var(--navy); font-weight: 800; font-size: 12px; padding: 3px 8px; border-radius: 6px; }
+  .card-local { font-size: 12px; font-weight: 700; color: var(--accent); }
+  .card-title { font-size: 15px; font-weight: 700; margin: 6px 0 3px; }
+  .card-sub { font-size: 11px; color: var(--muted); margin-bottom: 8px; }
+  .interv-row { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; font-size: 11px; }
+  .pill { background: #f1f5f9; border: 1px solid #cbd5e1; border-radius: 6px; padding: 2px 7px; font-weight: 600; }
+  .crit-box { background: #f8fafc; border-left: 3px solid var(--slate); padding: 7px 9px; font-size: 12px; color: #334155; border-radius: 0 6px 6px 0; margin-bottom: 10px; }
+  .action-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(136px, 1fr)); gap: 8px; }
+  .btn-choice {
+    min-height: clamp(44px, 6.5vh, 52px);
+    padding: 8px 12px;
+    border-radius: 10px;
+    border: 1.5px solid var(--line);
+    background: #fff;
+    font-size: clamp(13.5px, 3.8vw, 15px);
+    font-weight: 700;
+    line-height: 1.2;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    transition: background-color 0.16s ease, color 0.16s ease, border-color 0.16s ease, transform 0.1s ease;
+  }
+  .btn-choice:active { transform: scale(0.98); }
+  .btn-choice.cumpre {
+    border-color: var(--line);
+    color: var(--ink);
+    background: #fff;
+  }
+  .btn-choice.cumpre.selected {
+    background: var(--ok-bg);
+    color: var(--ok-ink);
+    border-color: var(--ok-border);
+    box-shadow: 0 2px 6px rgba(22, 163, 74, 0.22);
+  }
+  @media (max-width: 360px) {
+    .action-row { grid-template-columns: 1fr; }
+  }
+  @media (min-width: 640px) {
+    .action-row { grid-template-columns: 1fr 1fr; gap: 10px; }
+  }
+  .btn-choice.naocumpre.selected { background: var(--no-bg); color: var(--no-ink); border-color: #dc2626; }
+  .nc-box { display: none; margin-top: 8px; padding: 8px; background: #fef2f2; border: 1px solid #fecaca; border-radius: 8px; }
+  .nc-box.show { display: block; }
+  .nc-label { font-size: 12px; font-weight: 700; color: var(--no-ink); margin-bottom: 6px; }
+  .nc-opts { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .btn-imp { min-height: 38px; border-radius: 7px; border: 1px solid #fca5a5; background: #fff; font-size: 12px; font-weight: 700; cursor: pointer; }
+  .btn-imp.active-imp { background: #dc2626; color: #fff; border-color: #dc2626; }
+  .btn-imp.active-nimp { background: #d97706; color: #fff; border-color: #d97706; }
+  .extra-grid { display: grid; grid-template-columns: 1fr; gap: 6px; margin-top: 8px; }
+  .extra-grid input { width: 100%; padding: 8px 10px; border-radius: 8px; border: 1px solid var(--line); font-size: 13px; }
+  .sign-card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 12px; margin: 10px 12px 16px; }
+  .sign-card h3 { margin: 0 0 8px; font-size: 14px; }
+  .sign-field { margin-bottom: 10px; }
+  .sign-field label { display: block; font-size: 12px; font-weight: 600; margin-bottom: 4px; }
+  .sign-field input { width: 100%; padding: 8px 10px; border: 1px solid var(--line); border-radius: 8px; font-size: 13px; }
+  canvas.sig-pad { width: 100%; height: 110px; border: 1px dashed #64748b; border-radius: 8px; background: #f8fafc; touch-action: none; }
+  .btn-clear { margin-top: 4px; background: #e2e8f0; border: none; border-radius: 6px; padding: 5px 10px; font-size: 11px; font-weight: 600; cursor: pointer; }
+  .bottom-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 30;
+    background: #fff;
+    border-top: 1px solid var(--line);
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
+    padding: 8px 10px 46px 10px;
+    box-shadow: 0 -2px 8px rgba(15,23,42,0.08);
+  }
+  .b-btn { min-height: 44px; border-radius: 9px; border: none; font-size: 12px; font-weight: 700; cursor: pointer; }
+  .b-csv { background: #166534; color: #fff; }
+  .b-print { background: var(--navy); color: #fff; }
+  .b-reset { background: #fee2e2; color: var(--no-ink); }
+
+  @media print {
+    * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; color-adjust: exact !important; }
+    header { position: static; background: #ffffff; color: #0f172a; border-bottom: 2px solid #0f172a; box-shadow: none; }
+    .hdr-sub-edit { background: transparent; border: none; padding: 0; }
+    .hdr-sub-edit input { color: #0f172a; font-weight: 600; }
+    .edit-icon, .btn-obra, .progress-wrap, .kpi-strip, .filters, .bottom-bar, .btn-clear { display: none !important; }
+    body { background: #fff; padding-bottom: 0; }
+    .card { break-inside: avoid; }
+    .btn-choice.cumpre {
+      background: #ffffff !important;
+      color: #0f172a !important;
+      border-color: #cbd5e1 !important;
+    }
+    .btn-choice.cumpre.selected {
+      background: #dcfce7 !important;
+      color: #166534 !important;
+      border-color: #16a34a !important;
+    }
+    .btn-choice.naocumpre.selected {
+      background: #fee2e2 !important;
+      color: #991b1b !important;
+      border-color: #dc2626 !important;
+    }
+    .btn-imp.active-imp {
+      background: #dc2626 !important;
+      color: #ffffff !important;
+      border-color: #dc2626 !important;
+    }
+    .btn-imp.active-nimp {
+      background: #d97706 !important;
+      color: #ffffff !important;
+      border-color: #d97706 !important;
+    }
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="hdr-top">
+    <div class="brand-left">
+      <div class="logo-box" title="Zitrón Brasil">
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAAA0CAYAAABCZTCoAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAAFxEAABcRAcom8z8AABSJSURBVHhe7V0LmF1Vdd5oRG15+YJWiy2in0qqXy22ReQloPWFqFVrRLGCoq3Qr/2kWLU1WilIIZIHJpm553HvPJKZCQHC2xZNIG2AAgmPycw9jzvvvGYgSEggLzL9/3X2PnPOuWeSmWQyM+l31/et7965d+29197r32uvvfa+Z9SEUUN4onIqFykruF5Z3h3K9tqVHQzh713KDYeVEwwry9+FvweUHT6M75qU1XW1aqycrVr3vV7XUqMjiuoef7NyOr+iHK9ROf4zqhj2wNCD+HsbALATQNgL3ifGFwDI+92Q3QEwPA/ehL+7lBM+AkDMVfXl89U8/7W69hpNW3KCk5Vdvgb8IAzXC0PuVc0bh1XzhmHV0DusSt3DqlgZjmd+kvlZsQsyPcOqsQ9lUK5pAN95OwAMT9n+cmV1XqLm9NW8wrSjW9qPgfu+QhX8/4Ihh1TzpsjoNHjW0ONhgqIBgFiC+gigYqUiXsXyP6ZbrtGUU6HzdMz4erjrDWrJZszefhgvZ4aLQTH7aVDKNGN2EyRkznTOegImzzuYsvQKItezDp/9QC3uPVVrUaNJp9krZ8AIF6tS1wNiUDF8juHo0mm41iEYXzzCc5jFZcQCj8O1r9H8JLgLM3u7eI+lWyJQcEnI1keAtOB7J9iDZeEftTY1mlS6ZcsxWI8vg/E71VLMes7OlKFgJAKCHoFruB2sVW6wHEa+CYb/exjuC1guPorg7xxhJ/wkvMhX8f33IbsYQLgf8r7EC+L+AaJk/QSU7ffi/V9rjWo0aSTG9/9Oud39YoikYchcq+neHX8Ihn0QfC22eB9Rc1rHHrwVvbepYvClaGkBeGxsGY1HaAKwSj1bAZCrtPSRSW1tr1bz7n2tams/uorrhl8DiaMiwelE3IoVyt9UTlevrN1Jw8v6DuO7lZ1iNMe7Wgx5qFREjOF4C1FnJdoh9O/D7J+vCu1v1BJHJln+BzCGV2JJ+06KG7sxuby/wVb6d7TkNCKr/FnMzPVi/GSwxplJ49vBs+hYQVld79YlJoZmz36VKgQfh0dYAx3uUfXtf6K/OXKp4F+jWgdfAbjT3NT3CgC+SRUqJ2nJaUKL/NPgdn8tbj+55vM9I3PL6wNfJUvE4SK3+z2qvnyKUsPT0D2OkwrYxdz6QhQkJ5lxkx1snV4AmN12tMzsUs8ememx8eEFuN7bTNRgzTZJmjuGjlXuuhMmlPMygVxHGzb9bkpu4eo3qLrK8Wp4+FVaanoSAbDst8xtjIwnmbGOGwxOLwAUEKEXvE1V674EgV2hqvdmYc1i4II12/+YcuCqG3ofV3Y4MSx1VX6iFoYnShuGbO8dGKy5qbZKvU8AkA+oUvvbtdT0pIL3I3Xbdsz6TLKMQa7tb1Rzn54mAFgCRTigDX37Uq5fovLuzTDC9+LZORuzruhdKkvCsq3Rfv5QuWUQdT2PQQnbEFv8obRjyOl8H3RZpW7FTFoKOcrfBrfq+Ltz45CifyrkbwBwV2B3EnHLlhVYuq6XbOZkUiF4p2oZugj6/Bva3yvetIRYyg13Q68SttnHaskpJjv8Wyj4Qmr2Ewilyiv4HMtCx5u0ZAQA1/sylouXq/buB8scGAkw/SL+Plm3FJHtn4bP7hbAmewjZ1C0BX2Xlhqhxd5foEy7uvOlYdX6bMR3473tP6UKa6ZmV+FWLlcN3a/ImFJ3noq63WfIWE45Nfe+AYO6SgyQjPolUCk/WhWNHy4ARFnGJdUeIKQHWK3ugCttg8dpe25YrYBBHR/lEDBmiWlry/8fyTaa+uk1LP8hiR0mm5qov/+Ium3bsFoOLybu31uEb6ZJkGtXPo21ajCV8JFkTO82bFmu1lIjtD8AEETM6jFzSACR+Z51ZwOhJPM7Dowb/Ezd/vwJuqWIWhF0uv4l2DpdDzCAg+tVc991eP8vqq78Zi01Qgs73w2ZB1Uz2jX1c4lxvN/g21dHQpNIXJJs7yfo43wsqfOxxb0W2+yZ+ttpQHZgwzXtTAUqMvu9XwEY79VSIzQaAOje5Izffwzu9r/xqs8A4F3kTMDblvIwcTl8xliDs8T1Im8jmcjwj1X9+rMRb/y5eAHqYrh+3Uxx/1E2DUZ/Gl6s409VIfww2v4G9Hg6qlO3Id7AfxKfI3jtPBMu+EPKLb8n3kWwLbt8lnyeZX5eqLxfNfrHyR2Iuo5zodMsTJIr0NblWCLPEZAmqd7/A5T9iCr4XwF4IVP+GsZglrI7ZkGP6DOerBbLzISepRYkllgS4y3ZDntnV+lDdtHPYng6bDFDNXb8PibOeVKvE34b9X1XXmkjJzxf1e0vUG589jgU7IhmnzZOZBAewvyzlkpTHgBYhvtbq7xElKNxSt3vFa7vOUWUKlUGooOfBAhYjmu77W3G95/WLcCNY8DdoBmyvDDSAdn1KXbDIAKZjhds/1zU8QAGLYBe3eCXBJBxO2zX3wE5D0AsR/V4C+MtrRM0oc4KBrczai/JQUUmAw+lGFzaXq+MF70aX53gV3E2lMCtD/4SgV4BOmySZY1AZB+zzM85flYQwgv/HOVmApDRskAAcZkoVbqr9SH7AfgR6PRV8HyAaSCqEzGcaZN12/4WeB5X2esvxNi8TupOEVFqBxtTsyXK9nXKbMkjAoA3gRjVMj9Az8HGGEBaGFTOkiQtfuZUDO4yUdCAzHDkdXZC0WtSEXp9xxkYgIfFE9GQWY6C1efEvYo8wEPDLMkksFKMtvkddaUezDbWbYhSsfRUskwxQk+0QxZg+9vFoPyby5XJirIeBq5ciuiNCt4VkkLneBq5AzLGgMxA1+45TfRpwKShfjwRzeojOqAcb1hxK2kHe6I6svWSIcuxKoZlTKgviu1SxHWUA8nOmIESd+k1qkWj5PhZCV0XXXpDN6947Ublu6H0bigzNwUAzjDeEyz1QkkokzQIFbT8fcqB11jQ+VZdIiLXPwMyj8raTZCwLAfbcJSYejYGQIH3EcsDqgWAoTxlkm2R+RmNyVnLI2vbvy8GgBs+IrFKI8aBeiXbihk6iC4cWLxyptlihJ9JPQ5mvhOUR4CEMnG7kOcYG+b3Kb2k3n0A0M1qHrzyEowH9WvDDoY6j6YTx4XfJ+tO9l9kUDZa0h+OARaT67dA8EUpJAqhACNmJ/hh7I6yxM+t8INQcAFeC3hdDBDUYc9rAZVfVjck9rZu8C0A4AUZWNNhUQyKcxCtYB068X4tPUI2tnKM/JsGotw5BzpZXlwvtoEGADxqdvwKgkPI++CEbIpRVzFkfXvBd44AIHhI8vMsm23LsJnR8jfkXBiM3ssJvikxgBW2yMznPt+UMYaS+5H+rkie+Qu0wTEwcmTjshlTNDOmCVcATPn9N2z0sf09Uj8v4fKKnmnXyNH7RtfuZkt/Y2JWzfF2xsqIYWSALtUS+cQghW5v4ZMnovG3CPM910ADHC4h3I8nlxdhKEakFoJBZfV+RmSzVKq8Hd9fCWDeqJyKg3KVkcEHGwAw0UJiwGQBtG7XHNTfCJkN0oaRJwDlRjJA64Q34fVG6HfZ6cM6iJTAqXIzxuPfIdep1/Y0R5NkG8reh7Zvwfs6cJMElQQx+8qZliwjXgJxhxv+Ezzd+fjsTASrn0fbmDjhrlSfaDB6D9f7npyCFoNLldvzC5TnBHtGLxMjzLI2XqmP638HALwgmgjhtbBff7oPum7bW6lWInCMyRLE7RUBChK9dnkzPvuUljg4qkOEbXfeLkpkXT/RaIcvQ5kfYTk5WpdIE1PObvcJyl4LcCFKdoP/jLyI1tMAwCSCeL6+4NE3RYD0LoT+/ysdNm0aF7ho/bswYBFgo7OECKw8X5j78EkSjfNSSyu3jbqsABazk7ubUnCxsrDNXIzIe9G6tym3848i9x/CqF5fdEdCl5OYp+ITaKotc3hG4NphA+R2xyAQAGC9pidlUGkNHSv94Q7IRkBMMJlZHWUTETuFv5QdTPIMheDh2BYrg7I8GH24xDneetXc+w4tCaLLMAJSsRRYDyXO0xLjJw4IZ1hT/47ULIzrD/dirWtVrRvfokvsn+jmXbhrcWOjACBJHBDHX51OBNGg5VVjurDC+IfJJlO2Ae0Ww0H0afSraVwGnGBzpKNpE0up3blU3dKWn36mh+T1eNYvZdA3mRzoK0FmSAxarpc+GwBQjmUdbBPziLsvzvbkJJDAGbuHYtc5WgpkvjQs61CwVhXKH9YS4ycOBs8PxOX4I3XTE4jr956I9/tjofGmgg81E8hsJIMvU5ZbK7uM7WWQv1yRLLjgLACYgnaCeVqimgrt74QBB6O+sIwGgBPcm0oUWQwIAzsNALyXIDgnfiK1bT0eck06nouYS7EdYIuc9O7mS8OHCgAGMHa5IzX4holA7vcZKI6HphwA4tYr2GV8UUtUU8H7NmSqAcBTzNGI2+M8AFjBPalofTQAyDYYfc0jHp9zexpdrI1Y+uH3qLokkCdyCWAO3+68T2Z5ct2nF2Djxa4d+PynWnrsdCQD4GA8wEQAgDEHTxvzAFDwL9JSoIkKAok4pzxPjJy37jf27UEnlsILVOfuD0Q1ABxGABzsNjBLzL8Xw+rLJFRYkjaIwOu7z9DSSu7/zfOPkwCHzH0vX5nTN/l9QzUAHEYAHEwiKEsNTNpwv08FM1s+6VzYD6N8Q0tHxOtkVnAV2r9R2An+Q165Dy8ggk1SDQCHEQAHkwpOEpWzvPtlL5tNVESg4s2Xa+OrZIaWVE7Cd6sBGHofZtN2Ij7gmQC2NuEntVRE/1+DwOJhDALHDID68HxUnn8YxF/17I/ulATIL8A7UwkHMhWVu/3YBzPpkiVeQbOwHeQemMzyTTJ4exBMprdbEwmAm1em7xrk0YQBYIgB8AItUU28zmajD1MKgIM5DibxHJr3AmkE8R66rGEqWOp+SrZ8rX1vxGcnx8yHSdBIPJ/nkmHa5c7B9l+SCypJ4rm9G9yVCwBzFpCkPABIira8RgbzQMSsWy4A/L/SEtXEH3k4nEhimIiZebPLt6rCKBc/C+WPo87nR0CDvvE9E0HJm05u++9JdjAPACX/A1oqTVEyLn8bWBXgE13juRAyrI6CzJng9WL87LpP5pJglbfg/Wp08td4XRWz/M2LIt62FHBiAPgRAJizZrDIK2nMd2cBYDEREsyUa+MMHE3MwosSWQBEp4ddANcX4p9qJYNNApqfkdywRa/fui1dlkfgdXWvQXtHi15JsisXQraSCoIlfRwMAgTf1VIj5AxgMvi3oT97ZKwoLxMP/bL9BrkPQDr33Bmq/slT8FkxFwBWx4egy4zZ5mIL9Vq5coacyPIpLJL+1fpIP7xejPvn4zEQGu+VMBdulMeWBEzW9ceMvT+/pxGIQrpgw/ybADMdN0wA8CKHQShv2zRv4sHO3eAN8n0sK2UZO9yFQWmE7I8lriBJKhhASwIgqps5j7Uo24zXJuV0XR1fkuAPWW3PhtGKMkuSMRHbsv0X8X41PkdZ9J0GTJKcWfiPVR0GyXIahuA54H/ATL4SLv6H0SyH/snJQ+PSYKXwX9XXV74OMrMwXk1ypkJwJceL79kfN7wf+qD/4ecE0Fw6eGmlaWAZXrs0CJNltuM9H+zRLCw03kuhsiZ5K1CBMcTEsAGA40VBIDt2z0t6ULJA44VQ6Mr7AnTXdrBONeor4txK2gBN0o2LPOrnDOVV9uiwZ1V8dM1dCAG7fJs2WiKFzbLUjRPkDl5GxcxzB6pT2byZU+zZlQIPmTMvmrE8SdwK3fbI2CY9LpnGaugZhAf7hNTHI/Z72X9MGKkzo5PpP/vCK+8855Arb5gst2/P74eMASYG4xNyTOO5Fs41yQ7a8Pm+wwoAHoPKZc4cWcPUMQItf6E8EhBy+0XgJGeAYeocna/fFf/EzQl+ina3VRkvy9H4VJTT9z4plyTGHnb5sQiwGeNSR/GY4OyYiVEAEibhLP+m+Icx9DTJpSiPTV8K5R+LN+MNLy7N2XzMaBzTeH4YwkuIvK5EFFPBpHs/FJaHS9AA5YulHa6Fd+kZMBq3oAxB4mJHYTwAiZchC/5qiRsoxwFhX8jUWwbI+03CA9wgAOSPU7JtJPn2FzkuQ7kegMTLn1bnU9IPAiHZbpb5HW9Q87WIHYTjl7BERPcbSC4mAH/PkKeHYRl/tGOVrxMAOJWPwlb9omeefJZTNNafhnHW2N7PwY8DgSM/1zpULoIZvDnPnCn6ON4PoOQTubJZ5gWL7O3XQud5EoU3dLdjZnRjkAbQH8QSYQ/AxQdSLVBz9CPqeIuW28QD/dStqf8JyK7ARBkxVJbkIgzaLXavxxjxARcb4C35RLSNwua9HfYjDijLxONRM5euJHHSHaj/Mv6wg+V9SwI7q/ODqHuZ6Jknn+UUjefHoYy8eU06+YPNieC29mMQkUcRbeua10uKOE8uy9z3Vl14BNFrcSdjhZ/CQM3CgH8NfbpYbvEwcDPE2VNXOT637iTTSOx32/D+f19AY9T3zlR29+dUIfy6siqXYWw16/ccy8bKn8k5Sh7xmtlY+x8Fs0fJI33kIskYy1XRWH4e7iCSNXfpDgdxa2eVL1DNmdvFh0LcIhIgBO5YU9wTQdyWESx5nAfYaUFT9YAIGoZpYCt4SA6W6NZqNAUkbnMKHhHjhr/EMtMlZwoMUCRTGF6gJWo0qSQ/zTrMD4myet8KT/Ml8SbZh0TJkiPZvuWouzrfX6NJIAZWdvlyzMiybDWSMYEwlgemJyX75e2Ay0aEjOiXSRUe9TJ3zhu6vLhItsNPIEq9BLP8GsgsBHjuRZnRHxNHkDUO7IQO8yVAq9EU0EQ8KFJ+kQIe14MiAQpJ5PTuwn74ujhhU6MpoijLNbmPim3oWouA9Pv4PJ13r9EU0WQ9LLrUFWKZaDjgfYQaTRFxRk7I4+LpIVCOnoExhBsyK7ZcfntvTulqNI1ptH8YYQcvABQvI8DL/4cRPPCxvd8qC3t9HlnyP4jweJkPOYjPqGt0ZFHyX8bI+TUAMdq/jCnwwQZes+K/jClVzqr9y5ipIqX+D+Tq97c7FWR6AAAAAElFTkSuQmCC" alt="Zitrón" />
+      </div>
+      <div class="hdr-info">
+        <div class="hdr-title">Pré-Comissionamento — ZBR-OPER-FVS09-00</div>
+        <div class="hdr-sub-edit" title="Toque para editar o projeto / estação / contrato">
+          <input id="metaProjetoLinha" value="Linha 6 Laranja – SESC Pompeia | Contrato A-005546" oninput="syncProjectFromHeader()" aria-label="Projeto, Estação e Contrato" />
+          <span class="edit-icon">✎</span>
+        </div>
+      </div>
+    </div>
+    <button class="btn-obra" onclick="toggleObra()">Obra</button>
+  </div>
+  <div class="progress-wrap">
+    <div class="progress-meta">
+      <span id="progText">0 / 33 itens preenchidos (0%)</span>
+      <span>Rev. 00</span>
+    </div>
+    <div class="bar-bg"><div class="bar-fill" id="progBar"></div></div>
+  </div>
+  <div class="obra-panel" id="obraPanel">
+    <div class="obra-grid">
+      <div class="full-col">
+        <label>Projeto / Estação / Contrato (editável)</label>
+        <input id="metaProjetoPanel" value="Linha 6 Laranja – SESC Pompeia | Contrato A-005546" oninput="syncProjectFromPanel()" />
+      </div>
+      <div><label>Estação / Local</label><input id="metaEstacao" value="SESC Pompeia — L6 Laranja" oninput="saveMeta()" /></div>
+      <div><label>Contrato</label><input id="metaContrato" value="A-005546" oninput="saveMeta()" /></div>
+      <div><label>Data do Teste</label><input id="metaData" type="date" value="2026-11-22" oninput="saveMeta()" /></div>
+      <div><label>Responsável Zitrón</label><input id="metaZitron" value="Joelma Oliveira" oninput="saveMeta()" /></div>
+      <div class="full-col"><label>Cliente / Fiscalização</label><input id="metaCliente" value="ACCIONA" oninput="saveMeta()" /></div>
+    </div>
+  </div>
+</header>
+<div class="kpi-strip">
+  <div class="kpi ok"><div class="num" id="kCumpre">0</div><div class="lbl">Cumpre</div></div>
+  <div class="kpi no"><div class="num" id="kNaoCumpre">0</div><div class="lbl">Não Cumpre</div></div>
+  <div class="kpi imp"><div class="num" id="kImped">0</div><div class="lbl">Impeditivo</div></div>
+  <div class="kpi"><div class="num" id="kPend">33</div><div class="lbl">Pendente</div></div>
+</div>
+<div class="filters">
+  <input class="search-input" id="searchBox" placeholder="Buscar por item (2.1, 6.1), equipamento, local ou critério..." oninput="renderList()" />
+  <div class="chips" id="chipsRow">
+    <button class="chip active" data-filter="all" onclick="setFilter('all', this)">Todos (33)</button>
+    <button class="chip" data-filter="pend" onclick="setFilter('pend', this)">Pendentes</button>
+    <button class="chip" data-filter="ok" onclick="setFilter('ok', this)">Cumpre</button>
+    <button class="chip" data-filter="nc" onclick="setFilter('nc', this)">Não Cumpre</button>
+    <button class="chip" data-filter="imp" onclick="setFilter('imp', this)">Impeditivos</button>
+    <button class="chip" data-filter="Plat 1" onclick="setFilter('Plat 1', this)">Plataforma 1</button>
+    <button class="chip" data-filter="Plat 2" onclick="setFilter('Plat 2', this)">Plataforma 2</button>
+    <button class="chip" data-filter="Testes" onclick="setFilter('Testes', this)">Testes Integrados</button>
+  </div>
+</div>
+<div class="list-wrap" id="listWrap"></div>
+<div class="sign-card">
+  <h3>Assinaturas em Campo</h3>
+  <div class="sign-field">
+    <label>Zitrón Brasil — Nome / Assinatura</label>
+    <input id="sigZitronNome" placeholder="Nome do responsável Zitrón Brasil" oninput="saveMeta()" />
+    <canvas class="sig-pad" id="padZitron"></canvas>
+    <button class="btn-clear" onclick="clearPad('padZitron')">Limpar assinatura Zitrón</button>
+  </div>
+  <div class="sign-field">
+    <label>ACCIONA — Nome / Assinatura</label>
+    <input id="sigAccionaNome" placeholder="Nome do representante ACCIONA" oninput="saveMeta()" />
+    <canvas class="sig-pad" id="padAcciona"></canvas>
+    <button class="btn-clear" onclick="clearPad('padAcciona')">Limpar assinatura ACCIONA</button>
+  </div>
+</div>
+<div class="bottom-bar">
+  <button class="b-btn b-csv" onclick="exportCSV()">Exportar CSV</button>
+  <button class="b-btn b-print" onclick="window.print()">Imprimir / PDF</button>
+  <button class="b-btn b-reset" onclick="resetAll()">Limpar Tudo</button>
+</div>
+<script>
+const ITEMS = [{"id": "item_01", "itemPie": "2.1", "grupo": "2. Ventilação – Exaustão", "subsistema": "Exaustão", "local": "Plataforma 1", "detalhe": "Motor – exaustão", "parametros": "Placa conforme ficha técnica; sentido de rotação conforme projeto; tensão ±10% nominal; corrente < nominal", "intervZitron": "H", "intervCliente": "W"}, {"id": "item_02", "itemPie": "2.2", "grupo": "2. Ventilação – Exaustão", "subsistema": "Exaustão", "local": "Plataforma 1", "detalhe": "VDF – exaustão", "parametros": "VDF parametrizado conforme projeto e operando sem falhas; comandos local/remoto funcionais", "intervZitron": "H", "intervCliente": "W"}, {"id": "item_03", "itemPie": "2.3", "grupo": "2. Ventilação – Exaustão", "subsistema": "Exaustão", "local": "Plataforma 1", "detalhe": "Dutos – exaustão", "parametros": "Traçado, fixação/suportação, vedação de juntas, integridade e limpeza interna conforme desenhos", "intervZitron": "H", "intervCliente": "S"}, {"id": "item_04", "itemPie": "2.4", "grupo": "2. Ventilação – Exaustão", "subsistema": "Exaustão", "local": "Plataforma 1", "detalhe": "Venezianas – exaustão", "parametros": "Venezianas instaladas conforme projeto, fixadas, aletas livres e desobstruídas", "intervZitron": "H", "intervCliente": "S"}, {"id": "item_05", "itemPie": "2.1", "grupo": "2. Ventilação – Exaustão", "subsistema": "Exaustão", "local": "Plataforma 2", "detalhe": "Motor – exaustão", "parametros": "Placa conforme ficha técnica; sentido de rotação conforme projeto; tensão ±10% nominal; corrente < nominal", "intervZitron": "H", "intervCliente": "W"}, {"id": "item_06", "itemPie": "2.2", "grupo": "2. Ventilação – Exaustão", "subsistema": "Exaustão", "local": "Plataforma 2", "detalhe": "VDF – exaustão", "parametros": "VDF parametrizado conforme projeto e operando sem falhas; comandos local/remoto funcionais", "intervZitron": "H", "intervCliente": "W"}, {"id": "item_07", "itemPie": "2.3", "grupo": "2. Ventilação – Exaustão", "subsistema": "Exaustão", "local": "Plataforma 2", "detalhe": "Dutos – exaustão", "parametros": "Traçado, fixação/suportação, vedação de juntas, integridade e limpeza interna conforme desenhos", "intervZitron": "H", "intervCliente": "S"}, {"id": "item_08", "itemPie": "2.4", "grupo": "2. Ventilação – Exaustão", "subsistema": "Exaustão", "local": "Plataforma 2", "detalhe": "Venezianas – exaustão", "parametros": "Venezianas instaladas conforme projeto, fixadas, aletas livres e desobstruídas", "intervZitron": "H", "intervCliente": "S"}, {"id": "item_09", "itemPie": "2.5", "grupo": "2. Ventilação – Exaustão", "subsistema": "Exaustão", "local": "Plataformas 1 e 2", "detalhe": "IHM/CLP – exaustão", "parametros": "Comandos liga/desliga, status, falhas na IHM e intertravamentos conforme lógica aprovada", "intervZitron": "H", "intervCliente": "W"}, {"id": "item_10", "itemPie": "3.1", "grupo": "3. Ventilação – Insuflação", "subsistema": "Insuflação", "local": "Plataforma 1", "detalhe": "Motor – insuflação", "parametros": "Resistência de isolamento, rotação, tensão ±10%, corrente < nominal, vibração conforme AMCA 204-05", "intervZitron": "H", "intervCliente": "W"}, {"id": "item_11", "itemPie": "3.2", "grupo": "3. Ventilação – Insuflação", "subsistema": "Insuflação", "local": "Plataforma 1", "detalhe": "VDF – insuflação", "parametros": "VDF parametrizado conforme projeto e operando sem falhas; comandos local/remoto funcionais", "intervZitron": "H", "intervCliente": "W"}, {"id": "item_12", "itemPie": "3.3", "grupo": "3. Ventilação – Insuflação", "subsistema": "Insuflação", "local": "Plataforma 1", "detalhe": "Dutos – insuflação", "parametros": "Traçado, fixação/suportação, vedação de juntas, integridade e limpeza interna conforme desenhos", "intervZitron": "H", "intervCliente": "S"}, {"id": "item_13", "itemPie": "3.4", "grupo": "3. Ventilação – Insuflação", "subsistema": "Insuflação", "local": "Plataforma 1", "detalhe": "Venezianas – insuflação", "parametros": "Venezianas instaladas conforme projeto, fixadas, aletas livres e desobstruídas", "intervZitron": "H", "intervCliente": "S"}, {"id": "item_14", "itemPie": "3.1", "grupo": "3. Ventilação – Insuflação", "subsistema": "Insuflação", "local": "Plataforma 2", "detalhe": "Motor – insuflação", "parametros": "Resistência de isolamento, rotação, tensão ±10%, corrente < nominal, vibração conforme AMCA 204-05", "intervZitron": "H", "intervCliente": "W"}, {"id": "item_15", "itemPie": "3.2", "grupo": "3. Ventilação – Insuflação", "subsistema": "Insuflação", "local": "Plataforma 2", "detalhe": "VDF – insuflação", "parametros": "VDF parametrizado conforme projeto e operando sem falhas; comandos local/remoto funcionais", "intervZitron": "H", "intervCliente": "W"}, {"id": "item_16", "itemPie": "3.3", "grupo": "3. Ventilação – Insuflação", "subsistema": "Insuflação", "local": "Plataforma 2", "detalhe": "Dutos – insuflação", "parametros": "Traçado, fixação/suportação, vedação de juntas, integridade e limpeza interna conforme desenhos", "intervZitron": "H", "intervCliente": "S"}, {"id": "item_17", "itemPie": "3.4", "grupo": "3. Ventilação – Insuflação", "subsistema": "Insuflação", "local": "Plataforma 2", "detalhe": "Venezianas – insuflação", "parametros": "Venezianas instaladas conforme projeto, fixadas, aletas livres e desobstruídas", "intervZitron": "H", "intervCliente": "S"}, {"id": "item_18", "itemPie": "3.5", "grupo": "3. Ventilação – Insuflação", "subsistema": "Insuflação", "local": "Plataformas 1 e 2", "detalhe": "IHM/CLP – insuflação", "parametros": "Comandos liga/desliga, status, falhas na IHM e intertravamentos conforme lógica aprovada", "intervZitron": "H", "intervCliente": "W"}, {"id": "item_19", "itemPie": "4.1", "grupo": "4. Ventilação – Pressurização", "subsistema": "Pressurização", "local": "Plataforma 1", "detalhe": "Motor 1 – pressurização", "parametros": "Resistência de isolamento, rotação, tensão ±10%, corrente < nominal, vibração conforme AMCA 204-05", "intervZitron": "H", "intervCliente": "W"}, {"id": "item_20", "itemPie": "4.2", "grupo": "4. Ventilação – Pressurização", "subsistema": "Pressurização", "local": "Plataforma 1", "detalhe": "Motor 2 – pressurização", "parametros": "Resistência de isolamento, rotação, tensão ±10%, corrente < nominal, vibração conforme AMCA 204-05", "intervZitron": "H", "intervCliente": "W"}, {"id": "item_21", "itemPie": "4.3", "grupo": "4. Ventilação – Pressurização", "subsistema": "Pressurização", "local": "Plataforma 1", "detalhe": "Dutos – pressurização", "parametros": "Traçado, fixação/suportação, vedação de juntas, integridade e limpeza interna conforme desenhos", "intervZitron": "H", "intervCliente": "S"}, {"id": "item_22", "itemPie": "4.4", "grupo": "4. Ventilação – Pressurização", "subsistema": "Pressurização", "local": "Plataforma 1", "detalhe": "Venezianas – pressurização", "parametros": "Venezianas instaladas conforme projeto, fixadas, aletas livres e desobstruídas", "intervZitron": "H", "intervCliente": "S"}, {"id": "item_23", "itemPie": "4.5", "grupo": "4. Ventilação – Pressurização", "subsistema": "Pressurização", "local": "Plataforma 1", "detalhe": "IHM/CLP – pressurização", "parametros": "Comandos liga/desliga, status, falhas na IHM e intertravamentos conforme lógica aprovada", "intervZitron": "H", "intervCliente": "W"}, {"id": "item_24", "itemPie": "4.1", "grupo": "4. Ventilação – Pressurização", "subsistema": "Pressurização", "local": "Plataforma 2", "detalhe": "Motor 1 – pressurização", "parametros": "Resistência de isolamento, rotação, tensão ±10%, corrente < nominal, vibração conforme AMCA 204-05", "intervZitron": "H", "intervCliente": "W"}, {"id": "item_25", "itemPie": "4.2", "grupo": "4. Ventilação – Pressurização", "subsistema": "Pressurização", "local": "Plataforma 2", "detalhe": "Motor 2 – pressurização", "parametros": "Resistência de isolamento, rotação, tensão ±10%, corrente < nominal, vibração conforme AMCA 204-05", "intervZitron": "H", "intervCliente": "W"}, {"id": "item_26", "itemPie": "4.3", "grupo": "4. Ventilação – Pressurização", "subsistema": "Pressurização", "local": "Plataforma 2", "detalhe": "Dutos – pressurização", "parametros": "Traçado, fixação/suportação, vedação de juntas, integridade e limpeza interna conforme desenhos", "intervZitron": "H", "intervCliente": "S"}, {"id": "item_27", "itemPie": "4.4", "grupo": "4. Ventilação – Pressurização", "subsistema": "Pressurização", "local": "Plataforma 2", "detalhe": "Venezianas – pressurização", "parametros": "Venezianas instaladas conforme projeto, fixadas, aletas livres e desobstruídas", "intervZitron": "H", "intervCliente": "S"}, {"id": "item_28", "itemPie": "4.5", "grupo": "4. Ventilação – Pressurização", "subsistema": "Pressurização", "local": "Plataforma 2", "detalhe": "IHM/CLP – pressurização", "parametros": "Comandos liga/desliga, status, falhas na IHM e intertravamentos conforme lógica aprovada", "intervZitron": "H", "intervCliente": "W"}, {"id": "item_29", "itemPie": "5.1", "grupo": "5. Interfaces", "subsistema": "Passivação", "local": "Geral", "detalhe": "Instalada onde não há mais instalações/passagens de cabos", "parametros": "Selagem corta-fogo instalada em 100% das passagens de dutos, sem passagens abertas", "intervZitron": "S", "intervCliente": "R"}, {"id": "item_30", "itemPie": "5.2", "grupo": "5. Interfaces", "subsistema": "Comunicação visual", "local": "SSO", "detalhe": "Botões de acionamento manual (pressurização Plat. 1 e 2)", "parametros": "Identificação dos botões (Pressurização Plat. 1 e 2); sinalização instalada e legível", "intervZitron": "S", "intervCliente": "R"}, {"id": "item_31", "itemPie": "6.1", "grupo": "6. Testes integrados", "subsistema": "Exaustão / Ventilação", "local": "Plataforma / SSO", "detalhe": "Exaustão de emergência (4 ventiladores a 100%)", "parametros": "Tempo de exaustão ≤ 6 min; alarmes/sirenes/flashes atuando; pressurização ativa; retorno após reset", "intervZitron": "H", "intervCliente": "H"}, {"id": "item_32", "itemPie": "6.2", "grupo": "6. Testes integrados", "subsistema": "Pressurização / ID", "local": "Salas de pressurização / SSO", "detalhe": "Acionador manual", "parametros": "Pressurização parte com alarme; motor da sala com fumaça para; normaliza após reset", "intervZitron": "H", "intervCliente": "H"}, {"id": "item_33", "itemPie": "6.3", "grupo": "6. Testes integrados", "subsistema": "Pressurização / Acionador manual", "local": "Salas de pressurização / SSO", "detalhe": "Botão soco na SSO", "parametros": "Central ID sem alarme ativo; botão soco na SSO aciona motor de pressurização correspondente", "intervZitron": "H", "intervCliente": "W"}];
+const STORAGE_KEY = "pie_fvs09_mobile_v2";
+let state = {
+  items: {},
+  meta: {
+    projetoLinha: "Linha 6 Laranja – SESC Pompeia | Contrato A-005546",
+    estacao: "SESC Pompeia — L6 Laranja",
+    contrato: "A-005546",
+    data: "2026-11-22",
+    zitron: "Joelma Oliveira",
+    cliente: "ACCIONA",
+    sigZitronNome: "",
+    sigAccionaNome: ""
+  }
+};
+let activeFilter = "all";
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY) || localStorage.getItem("pie_fvs09_mobile_v1");
+    if (raw) {
+      const p = JSON.parse(raw);
+      state = { ...state, ...p, meta: { ...state.meta, ...(p.meta || {}) }, items: p.items || {} };
+    }
+  } catch (e) {}
+  document.getElementById("metaProjetoLinha").value = state.meta.projetoLinha || "Linha 6 Laranja – SESC Pompeia | Contrato A-005546";
+  document.getElementById("metaProjetoPanel").value = state.meta.projetoLinha || "Linha 6 Laranja – SESC Pompeia | Contrato A-005546";
+  document.getElementById("metaEstacao").value = state.meta.estacao || "";
+  document.getElementById("metaContrato").value = state.meta.contrato || "";
+  document.getElementById("metaData").value = state.meta.data || "";
+  document.getElementById("metaZitron").value = state.meta.zitron || "";
+  document.getElementById("metaCliente").value = state.meta.cliente || "";
+  document.getElementById("sigZitronNome").value = state.meta.sigZitronNome || "";
+  document.getElementById("sigAccionaNome").value = state.meta.sigAccionaNome || "";
+}
+
+function saveState() {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) {}
+}
+
+function syncProjectFromHeader() {
+  const val = document.getElementById("metaProjetoLinha").value;
+  document.getElementById("metaProjetoPanel").value = val;
+  state.meta.projetoLinha = val;
+  saveState();
+}
+
+function syncProjectFromPanel() {
+  const val = document.getElementById("metaProjetoPanel").value;
+  document.getElementById("metaProjetoLinha").value = val;
+  state.meta.projetoLinha = val;
+  saveState();
+}
+
+function saveMeta() {
+  state.meta.projetoLinha = document.getElementById("metaProjetoLinha").value;
+  state.meta.estacao = document.getElementById("metaEstacao").value;
+  state.meta.contrato = document.getElementById("metaContrato").value;
+  state.meta.data = document.getElementById("metaData").value;
+  state.meta.zitron = document.getElementById("metaZitron").value;
+  state.meta.cliente = document.getElementById("metaCliente").value;
+  state.meta.sigZitronNome = document.getElementById("sigZitronNome").value;
+  state.meta.sigAccionaNome = document.getElementById("sigAccionaNome").value;
+  saveState();
+}
+
+function toggleObra() { document.getElementById("obraPanel").classList.toggle("open"); }
+function setFilter(f, el) { activeFilter = f; document.querySelectorAll(".chip").forEach(c => c.classList.remove("active")); if (el) el.classList.add("active"); renderList(); }
+function getItemState(id) { if (!state.items[id]) state.items[id] = { status: "", tipoNC: "", tag: "", obs: "" }; return state.items[id]; }
+function setStatus(id, st) { const it = getItemState(id); it.status = (it.status === st) ? "" : st; if (it.status !== "NC") it.tipoNC = ""; saveState(); renderList(); }
+function setTipoNC(id, tipo) { const it = getItemState(id); it.status = "NC"; it.tipoNC = (it.tipoNC === tipo) ? "" : tipo; saveState(); renderList(); }
+function updateField(id, field, val) { getItemState(id)[field] = val; saveState(); }
+
+function updateKPIs() {
+  let ok = 0, nc = 0, imp = 0;
+  for (const item of ITEMS) { const st = state.items[item.id]; if (!st) continue; if (st.status === "OK") ok++; if (st.status === "NC") { nc++; if (st.tipoNC === "IMP") imp++; } }
+  const done = ok + nc, pend = ITEMS.length - done, pct = Math.round((done / ITEMS.length) * 100);
+  document.getElementById("kCumpre").textContent = ok; document.getElementById("kNaoCumpre").textContent = nc;
+  document.getElementById("kImped").textContent = imp; document.getElementById("kPend").textContent = pend;
+  document.getElementById("progText").textContent = `${done} / ${ITEMS.length} itens preenchidos (${pct}%)`;
+  document.getElementById("progBar").style.width = `${pct}%`;
+}
+
+function matchesFilter(item) {
+  const st = state.items[item.id] || {};
+  const q = (document.getElementById("searchBox").value || "").toLowerCase().trim();
+  if (q && !`${item.itemPie} ${item.grupo} ${item.subsistema} ${item.local} ${item.detalhe} ${item.parametros} ${st.tag||""} ${st.obs||""}`.toLowerCase().includes(q)) return false;
+  if (activeFilter === "pend") return !st.status;
+  if (activeFilter === "ok") return st.status === "OK";
+  if (activeFilter === "nc") return st.status === "NC";
+  if (activeFilter === "imp") return st.status === "NC" && st.tipoNC === "IMP";
+  if (activeFilter === "Plat 1") return item.local.includes("Plataforma 1");
+  if (activeFilter === "Plat 2") return item.local.includes("Plataforma 2");
+  if (activeFilter === "Testes") return item.grupo.includes("6. Testes");
+  return true;
+}
+
+function renderList() {
+  updateKPIs();
+  const wrap = document.getElementById("listWrap"), filtered = ITEMS.filter(matchesFilter);
+  if (!filtered.length) { wrap.innerHTML = `<div class="card" style="text-align:center;color:#475569;">Nenhum item encontrado.</div>`; return; }
+  wrap.innerHTML = filtered.map(item => {
+    const st = getItemState(item.id), isOK = st.status === "OK", isNC = st.status === "NC", isImp = st.tipoNC === "IMP", isNImp = st.tipoNC === "NIMP";
+    return `<div class="card"><div class="card-head"><span class="badge-item">Item ${escapeHtml(item.itemPie)}</span><span class="card-local">${escapeHtml(item.local)}</span></div><div class="card-title">${escapeHtml(item.detalhe)}</div><div class="card-sub">${escapeHtml(item.grupo)} • ${escapeHtml(item.subsistema)}</div><div class="interv-row"><span class="pill">Zitrón: ${escapeHtml(item.intervZitron)}</span><span class="pill">Cliente: ${escapeHtml(item.intervCliente)}</span></div><div class="crit-box"><strong>Critérios / Parâmetros:</strong> ${escapeHtml(item.parametros)}</div><div class="action-row"><button class="btn-choice cumpre ${isOK?"selected":""}" onclick="setStatus('${item.id}','OK')">Cumpre</button><button class="btn-choice naocumpre ${isNC?"selected":""}" onclick="setStatus('${item.id}','NC')">Não Cumpre</button></div><div class="nc-box ${isNC?"show":""}"><div class="nc-label">Classificação da não conformidade:</div><div class="nc-opts"><button class="btn-imp ${isImp?"active-imp":""}" onclick="setTipoNC('${item.id}','IMP')">Impeditivo</button><button class="btn-imp ${isNImp?"active-nimp":""}" onclick="setTipoNC('${item.id}','NIMP')">Não impeditivo</button></div></div><div class="extra-grid"><input placeholder="TAG / Equipamento" value="${escapeHtml(st.tag)}" oninput="updateField('${item.id}','tag',this.value)" /><input placeholder="Observação / Medições" value="${escapeHtml(st.obs)}" oninput="updateField('${item.id}','obs',this.value)" /></div></div>`;
+  }).join("");
+}
+
+function escapeHtml(s) { return String(s||"").replace(/[&<>"']/g, m => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m])); }
+
+function initPad(canvasId) {
+  const c = document.getElementById(canvasId), ctx = c.getContext("2d"); let drawing = false;
+  function resize() { const r = c.getBoundingClientRect(); c.width = r.width; c.height = r.height; ctx.lineWidth = 2.2; ctx.lineCap = "round"; ctx.strokeStyle = "#0f172a"; }
+  resize(); window.addEventListener("resize", resize);
+  function pos(e) { const rect = c.getBoundingClientRect(), t = e.touches ? e.touches[0] : e; return { x: t.clientX - rect.left, y: t.clientY - rect.top }; }
+  c.addEventListener("pointerdown", e => { drawing = true; const p = pos(e); ctx.beginPath(); ctx.moveTo(p.x, p.y); });
+  c.addEventListener("pointermove", e => { if (!drawing) return; const p = pos(e); ctx.lineTo(p.x, p.y); ctx.stroke(); });
+  window.addEventListener("pointerup", () => { drawing = false; });
+}
+function clearPad(canvasId) { const c = document.getElementById(canvasId); c.getContext("2d").clearRect(0, 0, c.width, c.height); }
+
+function exportCSV() {
+  const rows = [["Projeto_Linha","Estacao","Contrato","Data","Item_PIE","Grupo","Subsistema","Local","Detalhe","TAG","Cumpre","Nao_Cumpre","Impeditivo","Nao_Impeditivo","Observacao"]];
+  for (const item of ITEMS) {
+    const st = state.items[item.id] || {};
+    rows.push([
+      state.meta.projetoLinha, state.meta.estacao, state.meta.contrato, state.meta.data,
+      item.itemPie, item.grupo, item.subsistema, item.local, item.detalhe, st.tag||"",
+      st.status==="OK"?"Sim":"", st.status==="NC"?"Sim":"",
+      (st.status==="NC"&&st.tipoNC==="IMP")?"Sim":"",
+      (st.status==="NC"&&st.tipoNC==="NIMP")?"Sim":"",
+      st.obs||""
+    ]);
+  }
+  const csv = rows.map(r => r.map(v => `"${String(v).replace(/"/g,'""')}"`).join(";")).join("\n");
+  const blob = new Blob(["\ufeff"+csv], { type: "text/csv;charset=utf-8;" });
+  const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = `Checklist_FVS09_${state.meta.data||"campo"}.csv`; a.click();
+}
+
+function resetAll() { if (confirm("Deseja limpar todas as marcações?")) { state.items = {}; saveState(); renderList(); } }
+
+loadState(); renderList(); initPad("padZitron"); initPad("padAcciona");
+</script>
+</body>
+</html>
